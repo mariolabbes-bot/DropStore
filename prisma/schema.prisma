@@ -1,0 +1,142 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================
+// Authentication Models (NextAuth)
+// ============================================
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  password      String?
+  image         String?
+  role          String    @default("customer") // "customer" or "admin"
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  accounts Account[]
+  sessions Session[]
+  orders   Order[]
+  products Product[] // Products imported by admin
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ============================================
+// E-commerce Models
+// ============================================
+
+model Product {
+  id          Int      @id @default(autoincrement())
+  externalId  String?  // ID from provider (AliExpress, CJ, etc)
+  title       String
+  description String?  @db.Text
+  price       Int      // Price in cents
+  image       String?
+  images      String[] // Array of image URLs
+  vendor      String?  // Provider name
+  stock       Int      @default(0)
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  userId      String?  // Admin who imported this product
+  user        User?    @relation(fields: [userId], references: [id])
+  
+  @@index([externalId])
+  @@index([active])
+}
+
+model Order {
+  id              Int      @id @default(autoincrement())
+  total           Int      // Total in cents
+  status          String   @default("pending") // pending, paid, fulfillment_pending, shipped, delivered, cancelled
+  paymentId       String?  // Stripe payment intent ID
+  externalOrderId String?  // Order ID from dropshipping provider
+  customerEmail   String?
+  customerName    String?
+  shippingAddress String?  @db.Text
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  // Relations
+  userId          String?
+  user            User?    @relation(fields: [userId], references: [id])
+  items           OrderItem[]
+  
+  @@index([userId])
+  @@index([status])
+  @@index([paymentId])
+}
+
+model OrderItem {
+  id        Int     @id @default(autoincrement())
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId   Int
+  productId Int
+  title     String
+  price     Int     // Price at time of purchase
+  quantity  Int
+  image     String?
+}
+
+model Cart {
+  id        Int        @id @default(autoincrement())
+  userId    String?    // Optional: link to user if logged in
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  items     CartItem[]
+}
+
+model CartItem {
+  id        Int     @id @default(autoincrement())
+  cart      Cart    @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  cartId    Int
+  productId Int
+  title     String
+  price     Int
+  quantity  Int
+  image     String?
+}
