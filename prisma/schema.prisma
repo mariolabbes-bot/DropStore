@@ -69,7 +69,7 @@ model VerificationToken {
 
 model Product {
   id          Int      @id @default(autoincrement())
-  externalId  String?  // ID from provider (AliExpress, CJ, etc)
+  externalId  String?  @unique // ID from provider (AliExpress, CJ, etc)
   title       String
   description String?  @db.Text
   price       Int      // Price in cents
