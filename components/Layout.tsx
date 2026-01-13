@@ -37,7 +37,7 @@ export default function Layout({ children }: LayoutProps) {
                     {/* User Actions */}
                     <div className="flex items-center space-x-6">
                         {session ? (
-                            <div className="hidden sm:flex items-center gap-4">
+                            <div className="flex items-center gap-4">
                                 <div className="h-8 w-8 bg-brand-gray-100 rounded-full flex items-center justify-center text-xs font-bold text-brand-gray-600">
                                     {session.user?.name?.[0] || session.user?.email?.[0]}
                                 </div>
@@ -51,7 +51,7 @@ export default function Layout({ children }: LayoutProps) {
                         ) : (
                             <button
                                 onClick={() => signIn()}
-                                className="hidden sm:block text-sm font-semibold text-brand-gray-900 hover:text-secondary transition-colors"
+                                className="text-sm font-semibold text-brand-gray-900 hover:text-secondary transition-colors"
                             >
                                 Entrar
                             </button>
