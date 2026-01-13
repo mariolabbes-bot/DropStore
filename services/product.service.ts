@@ -30,7 +30,6 @@ export class ProductService {
                 price: data.price,
                 image: data.images[0] || '',
                 vendor: data.vendor,
-                url: data.url,
             },
             create: {
                 title: data.title,
@@ -40,7 +39,6 @@ export class ProductService {
                 vendor: data.vendor,
                 externalId: data.externalId,
                 provider: providerName,
-                url: data.url,
             },
         });
 
