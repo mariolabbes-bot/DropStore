@@ -15,7 +15,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (req.method === 'GET') {
         try {
             const product = await prisma.product.findUnique({
-                where: { id: String(id) },
+                where: { id: Number(id) },
             });
             if (!product) return res.status(404).json({ error: 'Product not found' });
             return res.status(200).json(product);
@@ -29,7 +29,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             const { active, stock, price, title, description } = req.body;
 
             const updatedProduct = await prisma.product.update({
-                where: { id: String(id) },
+                where: { id: Number(id) },
                 data: {
                     ...(active !== undefined && { active }),
                     ...(stock !== undefined && { stock: Number(stock) }),
@@ -49,7 +49,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (req.method === 'DELETE') {
         try {
             await prisma.product.delete({
-                where: { id: String(id) },
+                where: { id: Number(id) },
             });
             return res.status(204).end();
         } catch (error) {
