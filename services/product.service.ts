@@ -38,7 +38,6 @@ export class ProductService {
                 image: data.images[0] || '',
                 vendor: data.vendor,
                 externalId: data.externalId,
-                provider: providerName,
             },
         });
 
