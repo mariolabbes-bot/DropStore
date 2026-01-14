@@ -18,11 +18,6 @@ export class AliExpressRapidAPIProvider implements DropshippingProvider {
     async searchProducts(query: string): Promise<ProductData[]> {
         console.log(`[RapidAPI] Searching for: ${query}`);
         try {
-            // Note: The user verified 'aliexpress-product1' which is primarily a scraper for details.
-            // Documentation for search on this specific host is not confirmed by the snippet.
-            // We'll attempt a common endpoint pattern or fallback to a warning.
-
-            // Hypothetical search endpoint for this API family:
             const response = await axios.get(`https://${this.apiHost}/search`, {
                 params: {
                     query: query,
@@ -35,13 +30,9 @@ export class AliExpressRapidAPIProvider implements DropshippingProvider {
                 }
             });
 
-            // Need to map response based on actual API shape. 
-            // For now, logging and returning empty if structure is unknown.
-            // console.log('[RapidAPI] Search Response:', response.data);
-
             if (response.data && response.data.docs) {
                 return response.data.docs.map((item: any) => ({
-                    externalId: item.app_sale_price ? item.product_id : item.item_id, // varies
+                    externalId: item.app_sale_price ? item.product_id : item.item_id,
                     title: item.product_title || item.title,
                     price: item.app_sale_price ? parseFloat(item.app_sale_price) * 100 : 0,
                     description: '',
@@ -54,8 +45,8 @@ export class AliExpressRapidAPIProvider implements DropshippingProvider {
             return [];
 
         } catch (error) {
-            // If 404, it might mean this host doesn't support search
-            console.error('[RapidAPI] Search Error (or endpoint not supported):', error instanceof Error ? error.message : error);
+            const message = error instanceof Error ? error.message : 'Unknown error';
+            console.error('[RapidAPI] Search Error:', message);
             return [];
         }
     }
@@ -71,7 +62,7 @@ export class AliExpressRapidAPIProvider implements DropshippingProvider {
                         'x-rapidapi-key': this.apiKey,
                         'x-rapidapi-host': this.apiHost
                     },
-                    timeout: 60000 // 60s timeout
+                    timeout: 60000
                 });
 
                 const data = response.data;
@@ -95,7 +86,8 @@ export class AliExpressRapidAPIProvider implements DropshippingProvider {
                     await new Promise(r => setTimeout(r, 2000));
                     continue;
                 }
-                console.error('[RapidAPI] Details Error:', error instanceof Error ? error.message : error);
+                const message = error instanceof Error ? error.message : 'Unknown error';
+                console.error('[RapidAPI] Details Error:', message);
                 throw error;
             }
         }
@@ -107,8 +99,8 @@ export class AliExpressRapidAPIProvider implements DropshippingProvider {
         return `API-MOCK-${Date.now()}`;
     }
 
-    private parsePrice(price: any): number {
-        if (typeof price === 'number') return price * 100; // if dollars
+    private parsePrice(price: number | string | undefined): number {
+        if (typeof price === 'number') return price * 100;
         if (typeof price === 'string') {
             return parseFloat(price.replace(/[^0-9.]/g, '')) * 100;
         }

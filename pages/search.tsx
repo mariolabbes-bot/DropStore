@@ -85,13 +85,17 @@ export default function SearchPage() {
                         </div>
 
                         <div className="inline-flex p-1.5 bg-white border border-brand-gray-100 rounded-2xl shadow-sm">
-                            {['aliexpress', 'rapidapi', 'cj'].map((p) => (
+                            {[
+                                { id: 'aliexpress', label: 'AliExpress', icon: '🟧' },
+                                { id: 'cj', label: 'CJDropshipping', icon: '🟦' }
+                            ].map((p) => (
                                 <button
-                                    key={p}
-                                    onClick={() => setProvider(p)}
-                                    className={`px-6 py-2.5 rounded-[14px] text-sm font-bold uppercase tracking-wider transition-all ${provider === p ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-brand-gray-400 hover:text-brand-gray-900'}`}
+                                    key={p.id}
+                                    onClick={() => setProvider(p.id)}
+                                    className={`flex items-center gap-2 px-6 py-2.5 rounded-[14px] text-sm font-bold uppercase tracking-wider transition-all ${provider === p.id ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-brand-gray-400 hover:text-brand-gray-900'}`}
                                 >
-                                    {p === 'cj' ? 'CJDropshipping' : p}
+                                    <span>{p.icon}</span>
+                                    {p.label}
                                 </button>
                             ))}
                         </div>

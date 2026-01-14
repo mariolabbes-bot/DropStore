@@ -14,14 +14,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // Solo permitir POST por simplicidad, o GET para búsqueda
     if (req.method === 'GET') {
-        // Búsqueda: /api/products/import?query=watch
-        const { query } = req.query;
+        // Búsqueda: /api/products/import?query=watch&provider=cj
+        const { query, provider } = req.query;
         if (!query || typeof query !== 'string') {
             return res.status(400).json({ message: 'Query string requerido' });
         }
 
         try {
-            const results = await productService.search(query);
+            const results = await productService.search(query, typeof provider === 'string' ? provider : undefined);
             return res.status(200).json(results);
         } catch (error) {
             console.error(error);
