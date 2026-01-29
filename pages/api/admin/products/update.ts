@@ -10,28 +10,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(401).json({ message: 'Unauthorized' });
     }
 
-    if (req.method === 'GET') {
-        try {
-            const products = await prisma.product.findMany({
-                orderBy: { createdAt: 'desc' }
-            });
-            return res.status(200).json(products);
-        } catch (error) {
-            return res.status(500).json({ message: 'Error fetching products' });
-        }
-    }
+    if (req.method === 'PUT') {
+        const { id, price, title, verified } = req.body;
 
-    if (req.method === 'DELETE') {
-        const { id } = req.query;
         if (!id) return res.status(400).json({ message: 'Missing ID' });
 
         try {
-            await prisma.product.delete({
-                where: { id: Number(id) }
+            const updated = await prisma.product.update({
+                where: { id: Number(id) },
+                data: {
+                    price: Number(price),
+                    title: title,
+                    verified: verified
+                }
             });
-            return res.status(200).json({ message: 'Product deleted' });
+            return res.status(200).json(updated);
         } catch (error) {
-            return res.status(500).json({ message: 'Error deleting product' });
+            console.error(error);
+            return res.status(500).json({ message: 'Error updating product' });
         }
     }
 

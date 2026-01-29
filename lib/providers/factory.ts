@@ -1,3 +1,4 @@
+
 import { DropshippingProvider } from './types';
 import { AliExpressProvider } from './aliexpress-provider';
 import { AliExpressRapidAPIProvider } from './rapidapi-provider';
@@ -13,16 +14,8 @@ export class ProviderFactory {
             return new CJDropshippingProvider();
         }
 
-        // 2. AliExpress (RapidAPI vs Scraper)
-        // If user asks for 'aliexpress' or 'rapidapi', we prioritize the robust RapidAPI 
-        // if the key is configured.
         if (lowerName === 'aliexpress' || lowerName === 'rapidapi') {
-            if (process.env.RAPIDAPI_KEY) {
-                return new AliExpressRapidAPIProvider();
-            }
-            console.warn('[ProviderFactory] RAPIDAPI_KEY missing, falling back to Puppeteer Scraper for AliExpress.');
-            return new AliExpressProvider(); // Fallback
-            // return new AliExpressRapidAPIProvider(); // Or force it to fail if we want to avoid scraping
+            return new AliExpressRapidAPIProvider();
         }
 
         // 3. Others
@@ -30,6 +23,9 @@ export class ProviderFactory {
             return new EproloProvider();
         }
 
-        throw new Error(`Proveedor no soportado: ${name}`);
+        // Fallback or Error
+        // For now, if unknown, try CJ as it's our best bet
+        console.warn(`[ProviderFactory] Unknown provider '${name}', defaulting to CJDropshipping.`);
+        return new CJDropshippingProvider();
     }
 }

@@ -28,14 +28,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             return res.status(500).json({ message: 'Error buscando productos' });
         }
     } else if (req.method === 'POST') {
-        // Importación: { externalId: '...' }
-        const { externalId } = req.body;
+        // Importación: { externalId: '...', provider: '...' }
+        const { externalId, provider } = req.body;
         if (!externalId) {
             return res.status(400).json({ message: 'External ID requerido' });
         }
 
         try {
-            const product = await productService.importProduct(externalId);
+            const product = await productService.importProduct(externalId, provider);
             return res.status(201).json({ message: 'Producto importado', product });
         } catch (error) {
             console.error(error);

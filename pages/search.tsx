@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Layout from '../components/Layout';
 import { useSession, signIn } from 'next-auth/react';
+import { toast } from 'react-hot-toast';
 
 export default function SearchPage() {
     const { data: session } = useSession();
@@ -32,6 +33,7 @@ export default function SearchPage() {
 
     const handleImport = async (product: any) => {
         setImporting(product.externalId);
+        const loadingToast = toast.loading('Importando producto...');
 
         try {
             const res = await fetch('/api/products/import', {
@@ -41,13 +43,24 @@ export default function SearchPage() {
             });
 
             if (res.ok) {
-                // Feedback could be a toast
+                toast.success('¡Producto importado correctamente!', { id: loadingToast });
+            } else {
+                const err = await res.json();
+                throw new Error(err.message || 'Error al importar');
             }
-        } catch (error) {
+        } catch (error: any) {
             console.error(error);
+            toast.error(error.message || 'Error al conectar', { id: loadingToast });
         } finally {
             setImporting(null);
         }
+    };
+
+    // Helper to strip HTML for card preview
+    const stripHtml = (html: string) => {
+        if (!html) return '';
+        const tmp = html.replace(/<[^>]*>?/gm, '');
+        return tmp.length > 100 ? tmp.substring(0, 100) + '...' : tmp;
     };
 
     if (!session) {
@@ -108,7 +121,7 @@ export default function SearchPage() {
                                 type="text"
                                 value={query}
                                 onChange={(e) => setQuery(e.target.value)}
-                                placeholder="Busca en el mundo..."
+                                placeholder="Busca productos o pega un link de CJ..."
                                 className="w-full pl-16 pr-40 py-6 bg-white rounded-[32px] border-none shadow-premium focus:ring-4 focus:ring-secondary/20 transition-all text-xl font-medium placeholder:text-brand-gray-300 outline-none"
                             />
                             <div className="absolute left-6 top-1/2 -translate-y-1/2 text-brand-gray-400 group-focus-within:text-secondary transition-colors">
@@ -149,7 +162,9 @@ export default function SearchPage() {
                                     </div>
                                     <div className="p-8 flex flex-col flex-grow">
                                         <h3 className="font-bold text-xl text-brand-gray-900 mb-3 line-clamp-1">{product.title}</h3>
-                                        <p className="text-brand-gray-400 text-sm mb-8 line-clamp-2 leading-relaxed font-medium">{product.description || 'Sin descripción disponible.'}</p>
+                                        <p className="text-brand-gray-400 text-sm mb-8 line-clamp-2 leading-relaxed font-medium">
+                                            {stripHtml(product.description || '') || 'Sin descripción disponible.'}
+                                        </p>
 
                                         <div className="mt-auto flex items-center justify-between">
                                             <div className="flex flex-col">

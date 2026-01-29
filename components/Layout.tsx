@@ -10,8 +10,7 @@ interface LayoutProps {
 
 export default function Layout({ children }: LayoutProps) {
     const { data: session } = useSession();
-    const { itemCount } = useCart();
-    const [isCartOpen, setIsCartOpen] = useState(false);
+    const { itemCount, isCartOpen, openCart, closeCart } = useCart();
 
     return (
         <div className="flex flex-col min-h-screen font-sans selection:bg-secondary/10 selection:text-secondary">
@@ -58,7 +57,7 @@ export default function Layout({ children }: LayoutProps) {
                         )}
 
                         <div
-                            onClick={() => setIsCartOpen(true)}
+                            onClick={openCart}
                             className="relative h-11 w-11 flex items-center justify-center bg-brand-gray-100/50 hover:bg-brand-gray-100 rounded-2xl cursor-pointer transition-all active:scale-95 group"
                         >
                             <svg className="w-5 h-5 text-brand-gray-900 group-hover:text-secondary transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -70,11 +69,17 @@ export default function Layout({ children }: LayoutProps) {
                                 </span>
                             )}
                         </div>
+
+                        {session?.user?.role === 'admin' && (
+                            <Link href="/admin" className="px-4 py-2 bg-brand-gray-900 text-white text-sm font-bold rounded-xl hover:bg-black transition-all shadow-lg hover:shadow-xl">
+                                Panel Admin
+                            </Link>
+                        )}
                     </div>
                 </div>
             </header>
 
-            <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
+            <CartDrawer isOpen={isCartOpen} onClose={closeCart} />
 
             <main className="flex-grow">
                 {children}

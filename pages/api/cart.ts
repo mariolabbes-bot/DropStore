@@ -30,7 +30,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(200).json(cart)
     }
 
-    res.setHeader('Allow', ['GET', 'POST'])
+    if (req.method === 'DELETE') {
+      const { itemId } = req.query;
+      if (!itemId) return res.status(400).json({ message: 'Missing itemId' });
+
+      await prisma.cartItem.delete({
+        where: { id: Number(itemId) }
+      });
+
+      return res.status(200).json({ message: 'Item deleted' });
+    }
+
+    res.setHeader('Allow', ['GET', 'POST', 'DELETE'])
     res.status(405).end(`Method ${req.method} Not Allowed`)
   } catch (error) {
     console.error(error)

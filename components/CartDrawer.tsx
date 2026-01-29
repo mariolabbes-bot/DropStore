@@ -1,5 +1,6 @@
 import React from 'react';
 import { useCart } from '../context/CartContext';
+import Link from 'next/link';
 
 interface CartDrawerProps {
     isOpen: boolean;
@@ -40,9 +41,11 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                         ) : (
                             items.map((item) => (
                                 <div key={item.id} className="flex gap-4 group">
-                                    <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-xl bg-brand-gray-100 border border-brand-gray-100 group-hover:border-secondary/20 transition-colors">
-                                        {item.image && <img src={item.image} alt={item.title} className="h-full w-full object-cover" />}
-                                    </div>
+                                    <Link href={`/products/${item.productId}`}>
+                                        <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-xl bg-brand-gray-100 border border-brand-gray-100 group-hover:border-secondary/20 transition-colors cursor-pointer">
+                                            {item.image && <img src={item.image} alt={item.title} className="h-full w-full object-cover" />}
+                                        </div>
+                                    </Link>
                                     <div className="flex flex-col justify-between py-1 flex-grow">
                                         <div>
                                             <h4 className="font-semibold text-brand-gray-900 line-clamp-1">{item.title}</h4>

@@ -15,34 +15,44 @@ export const authOptions: NextAuthOptions = {
                 password: { label: 'Password', type: 'password' },
             },
             async authorize(credentials) {
+                console.log('[Auth] Attempting login for:', credentials?.email);
+
                 if (!credentials?.email || !credentials?.password) {
                     throw new Error('Email y contraseña requeridos');
                 }
 
-                const user = await prisma.user.findUnique({
-                    where: { email: credentials.email },
-                });
+                try {
+                    const user = await prisma.user.findUnique({
+                        where: { email: credentials.email },
+                    });
 
-                if (!user) {
-                    throw new Error('No se encontró usuario con ese email');
+                    console.log('[Auth] User found:', user ? 'YES' : 'NO');
+
+                    if (!user) {
+                        throw new Error('No se encontró usuario con ese email');
+                    }
+
+                    if (!user.password) {
+                        throw new Error('Este usuario usa autenticación externa');
+                    }
+
+                    const isValid = await verifyPassword(credentials.password, user.password);
+                    console.log('[Auth] Password valid:', isValid);
+
+                    if (!isValid) {
+                        throw new Error('Contraseña incorrecta');
+                    }
+
+                    return {
+                        id: user.id,
+                        email: user.email,
+                        name: user.name,
+                        role: user.role,
+                    };
+                } catch (error) {
+                    console.error('[Auth] Error in authorize:', error);
+                    return null; // NextAuth expects null on failure
                 }
-
-                if (!user.password) {
-                    throw new Error('Este usuario usa autenticación externa');
-                }
-
-                const isValid = await verifyPassword(credentials.password, user.password);
-
-                if (!isValid) {
-                    throw new Error('Contraseña incorrecta');
-                }
-
-                return {
-                    id: user.id,
-                    email: user.email,
-                    name: user.name,
-                    role: user.role,
-                };
             },
         }),
     ],

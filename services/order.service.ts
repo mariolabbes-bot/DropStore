@@ -63,8 +63,19 @@ export class OrderService {
 
         if (!order) throw new Error('Orden no encontrada');
 
-        // Por defecto usamos AliExpress para todo, o lógica por producto
-        const provider = ProviderFactory.getProvider('aliexpress');
+        // Determinar el proveedor basado en el primer producto de la orden
+        const firstItem = order.items[0];
+        let vendor = 'aliexpress';
+
+        if (firstItem) {
+            const product = await prisma.product.findUnique({
+                where: { id: firstItem.productId }
+            });
+            vendor = product?.vendor?.toLowerCase() || 'aliexpress';
+        }
+
+        console.log(`[OrderService] Usando proveedor: ${vendor} para orden ${orderId}`);
+        const provider = ProviderFactory.getProvider(vendor);
 
         try {
             const externalOrderId = await provider.placeOrder({

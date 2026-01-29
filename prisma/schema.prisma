@@ -72,12 +72,16 @@ model Product {
   externalId  String?  @unique // ID from provider (AliExpress, CJ, etc)
   title       String
   description String?  @db.Text
-  price       Int      // Price in cents
+  price       Int      // Price in cents (Selling Price)
+  costPrice   Int      @default(0) // Cost from provider in cents
+  shippingCost Int     @default(0) // Estimated shipping cost in cents
+  otherCosts   Int     @default(0) // Other fees in cents
   image       String?
   images      String[] // Array of image URLs
   vendor      String?  // Provider name
   stock       Int      @default(0)
   active      Boolean  @default(true)
+  verified    Boolean  @default(false) // Verified by store owner
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   

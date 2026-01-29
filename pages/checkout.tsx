@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
+import { useCart } from '../context/CartContext';
 
 interface CartItem {
     id: number;
@@ -15,8 +16,7 @@ interface CartItem {
 export default function CheckoutPage() {
     const { data: session } = useSession();
     const router = useRouter();
-    const [cartItems, setCartItems] = useState<CartItem[]>([]);
-    const [loading, setLoading] = useState(true);
+    const { items: cartItems, loading } = useCart();
     const [processing, setProcessing] = useState(false);
 
     // Shipping form state
@@ -30,24 +30,6 @@ export default function CheckoutPage() {
         country: '',
         phone: ''
     });
-
-    useEffect(() => {
-        fetchCart();
-    }, []);
-
-    const fetchCart = async () => {
-        try {
-            const res = await fetch('/api/cart');
-            if (res.ok) {
-                const data = await res.json();
-                setCartItems(data.items || []);
-            }
-        } catch (error) {
-            console.error('Error fetching cart:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
 
     const calculateTotal = () => {
         return cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);

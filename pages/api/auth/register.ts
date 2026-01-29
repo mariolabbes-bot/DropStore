@@ -53,7 +53,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             user: userWithoutPassword,
         });
     } catch (error) {
-        console.error('Registration error:', error);
-        return res.status(500).json({ error: 'Error al crear usuario' });
+        console.error('Registration error details:', JSON.stringify(error, Object.getOwnPropertyNames(error)));
+        return res.status(500).json({ error: 'Error al crear usuario: ' + (error instanceof Error ? error.message : 'Unknown') });
     }
 }

@@ -1,6 +1,7 @@
 
-require('ts-node/register');
-const { AliExpressRapidAPIProvider } = require('../lib/providers/rapidapi-provider');
+import * as dotenv from 'dotenv';
+dotenv.config({ path: '.env.local' });
+import { AliExpressRapidAPIProvider } from '../lib/providers/rapidapi-provider';
 
 async function test() {
     console.log('Testing Rapid API Wrapper...');
@@ -11,10 +12,10 @@ async function test() {
 
     const provider = new AliExpressRapidAPIProvider();
     try {
-        const results = await provider.searchProducts('watch');
+        const results = await provider.searchProducts('smartwatch');
         console.log(`Found ${results.length} products`);
         if (results.length > 0) {
-            console.log('Sample:', results[0]);
+            console.log('First Result:', results[0].title, 'Price:', results[0].price);
         }
     } catch (e) {
         console.error('Search failed:', e);

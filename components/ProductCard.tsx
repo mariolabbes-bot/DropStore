@@ -1,6 +1,8 @@
+
 import React from 'react';
 import Link from 'next/link';
 import { useCart } from '../context/CartContext';
+import VerifiedBadge from './ui/VerifiedBadge';
 
 interface ProductCardProps {
     product: {
@@ -8,6 +10,7 @@ interface ProductCardProps {
         title: string;
         price: number;
         image?: string | null;
+        verified?: boolean;
     };
 }
 
@@ -29,6 +32,12 @@ export default function ProductCard({ product }: ProductCardProps) {
                     </div>
                 )}
                 <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+                {product.verified && (
+                    <div className="absolute top-3 right-3 z-10">
+                        <VerifiedBadge size="md" />
+                    </div>
+                )}
             </Link>
 
             <div className="p-6 flex flex-col flex-grow space-y-4">

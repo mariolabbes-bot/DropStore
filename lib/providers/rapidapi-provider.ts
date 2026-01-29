@@ -8,7 +8,7 @@ export class AliExpressRapidAPIProvider implements DropshippingProvider {
 
     constructor() {
         this.apiKey = process.env.RAPIDAPI_KEY || '';
-        this.apiHost = process.env.RAPIDAPI_HOST || 'aliexpress-product1.p.rapidapi.com';
+        this.apiHost = process.env.RAPIDAPI_HOST || 'aliexpress-true-api.p.rapidapi.com/api/v3';
 
         if (!this.apiKey) {
             console.warn('RAPIDAPI_KEY is not set. RapidAPI calls will fail.');
@@ -16,29 +16,33 @@ export class AliExpressRapidAPIProvider implements DropshippingProvider {
     }
 
     async searchProducts(query: string): Promise<ProductData[]> {
-        console.log(`[RapidAPI] Searching for: ${query}`);
+        console.log(`[RapidAPI-True] Searching for: ${query}`);
         try {
-            const response = await axios.get(`https://${this.apiHost}/search`, {
+            const url = `https://aliexpress-true-api.p.rapidapi.com/api/v3/products`;
+            console.log(`[RapidAPI-True] Requesting: ${url}`);
+            const response = await axios.get(url, {
                 params: {
-                    query: query,
+                    keywords: query,
                     country: 'US',
-                    page: 1
+                    language: 'en', // True API usually returns better results in EN, then we translate or use their localized fields
+                    page_no: 1,
+                    page_size: 20
                 },
                 headers: {
                     'x-rapidapi-key': this.apiKey,
-                    'x-rapidapi-host': this.apiHost
+                    'x-rapidapi-host': 'aliexpress-true-api.p.rapidapi.com'
                 }
             });
 
-            if (response.data && response.data.docs) {
-                return response.data.docs.map((item: any) => ({
-                    externalId: item.app_sale_price ? item.product_id : item.item_id,
-                    title: item.product_title || item.title,
-                    price: item.app_sale_price ? parseFloat(item.app_sale_price) * 100 : 0,
+            if (response.data && response.data.result && response.data.result.products) {
+                return response.data.result.products.map((item: any) => ({
+                    externalId: String(item.product_id),
+                    title: item.product_title,
+                    price: parseFloat(item.sale_price || item.app_sale_price || '0') * 100,
                     description: '',
-                    images: [item.product_main_picture || item.image],
-                    vendor: item.store_name || 'AliExpress Vendor',
-                    url: item.product_detail_url || `https://aliexpress.com/item/${item.product_id}.html`
+                    images: [item.product_main_image_url],
+                    vendor: item.shop_info?.shop_name || 'AliExpress Vendor',
+                    url: item.product_detail_url
                 }));
             }
 
@@ -52,32 +56,33 @@ export class AliExpressRapidAPIProvider implements DropshippingProvider {
     }
 
     async getProductDetails(externalId: string): Promise<ProductData> {
-        console.log(`[RapidAPI] Getting details for ID: ${externalId}`);
+        console.log(`[RapidAPI-True] Getting details for ID: ${externalId}`);
         let retries = 2;
         while (retries >= 0) {
             try {
-                const response = await axios.get(`https://${this.apiHost}/scraper`, {
-                    params: { productId: externalId },
+                const response = await axios.get(`https://aliexpress-true-api.p.rapidapi.com/api/v3/product-info`, {
+                    params: {
+                        product_id: externalId,
+                        language: 'en'
+                    },
                     headers: {
                         'x-rapidapi-key': this.apiKey,
-                        'x-rapidapi-host': this.apiHost
+                        'x-rapidapi-host': 'aliexpress-true-api.p.rapidapi.com'
                     },
                     timeout: 60000
                 });
 
-                const data = response.data;
-                if (!data) throw new Error('No data returned from RapidAPI');
-
-                const result = data.result || data;
+                const data = response.data.result || response.data;
+                if (!data) throw new Error('No data returned from True API');
 
                 return {
                     externalId: externalId,
-                    title: result.title || result.product_title || 'Unknown',
-                    price: this.parsePrice(result.price || result.format_price),
-                    description: result.description || 'No description',
-                    images: result.images || (result.product_main_picture ? [result.product_main_picture] : []),
-                    vendor: result.store_name || 'AliExpress Vendor',
-                    url: result.itemUrl || `https://aliexpress.com/item/${externalId}.html`
+                    title: data.product_title || 'Unknown',
+                    price: this.parsePrice(data.sale_price || data.price),
+                    description: data.product_description || 'No description',
+                    images: data.product_main_image_url ? [data.product_main_image_url] : [],
+                    vendor: data.shop_info?.shop_name || 'AliExpress Vendor',
+                    url: data.product_detail_url || `https://aliexpress.com/item/${externalId}.html`
                 };
             } catch (error) {
                 if (axios.isAxiosError(error) && error.response?.status === 504 && retries > 0) {
@@ -99,7 +104,21 @@ export class AliExpressRapidAPIProvider implements DropshippingProvider {
         return `API-MOCK-${Date.now()}`;
     }
 
-    private parsePrice(price: number | string | undefined): number {
+    async checkStatus(): Promise<{ connected: boolean; message?: string }> {
+        try {
+            // A simple request to see if API is alive
+            const response = await axios.get(`https://aliexpress-true-api.p.rapidapi.com/api/v3/products`, {
+                params: { keywords: 'test', page_no: 1, page_size: 1 },
+                headers: { 'x-rapidapi-key': this.apiKey, 'x-rapidapi-host': 'aliexpress-true-api.p.rapidapi.com' },
+                timeout: 5000
+            });
+            return { connected: true, message: 'Conectado a AliExpress True API' };
+        } catch (e: any) {
+            return { connected: false, message: e.message || 'Error de conexión' };
+        }
+    }
+
+    private parsePrice(price: any): number {
         if (typeof price === 'number') return price * 100;
         if (typeof price === 'string') {
             return parseFloat(price.replace(/[^0-9.]/g, '')) * 100;

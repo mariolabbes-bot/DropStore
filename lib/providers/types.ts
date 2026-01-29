@@ -2,6 +2,7 @@ export interface ProductData {
     externalId: string;
     title: string;
     price: number; // Precio en centavos (integer)
+    shippingCost?: number; // Costo de envío estimado
     description: string;
     images: string[];
     vendor: string;
@@ -32,4 +33,9 @@ export interface DropshippingProvider {
      * @returns ID de la orden en el sistema del proveedor
      */
     placeOrder(orderDetails: any): Promise<string>;
+
+    /**
+     * Verifica la conexión con el proveedor
+     */
+    checkStatus(): Promise<{ connected: boolean; message?: string }>;
 }

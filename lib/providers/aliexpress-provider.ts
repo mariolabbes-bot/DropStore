@@ -17,13 +17,16 @@ export class AliExpressProvider implements DropshippingProvider {
             });
             const page = await browser.newPage();
 
-            // Set user agent and viewport to simulate desktop
-            await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.88 Safari/537.36');
+            // Set user agent and locale
+            await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
+            await page.setExtraHTTPHeaders({
+                'Accept-Language': 'es-ES,es;q=0.9'
+            });
             await page.setViewport({ width: 1280, height: 800 });
 
-            // Navigate to AliExpress search page
-            const searchUrl = `https://www.aliexpress.com/wholesale?SearchText=${encodeURIComponent(query)}`;
-            console.log(`[AliExpress] Navigating to: ${searchUrl}`);
+            // Navigate to AliExpress search page (Spanish subdomain)
+            const searchUrl = `https://es.aliexpress.com/wholesale?SearchText=${encodeURIComponent(query)}`;
+            console.log(`[AliExpress] Page Navigating to: ${searchUrl}`);
             await page.goto(searchUrl, { waitUntil: 'domcontentloaded' });
 
             // Wait for product list to load
@@ -33,12 +36,14 @@ export class AliExpressProvider implements DropshippingProvider {
                 console.log('[AliExpress] Timeout waiting for selectors. Page might require captcha.');
             }
 
-            // Debug: Screenshot
+            // Debug: Screenshot and HTML Dump
             await page.screenshot({ path: 'debug_search.png' });
             const title = await page.title();
             const content = await page.content();
+            const fs = require('fs');
+            fs.writeFileSync('aliexpress_dump.html', content);
             console.log(`[AliExpress] Page Title: ${title}`);
-            console.log(`[AliExpress] HTML Preview: ${content.substring(0, 500)}`);
+            console.log(`[AliExpress] HTML saved to aliexpress_dump.html`);
 
             // Scrape results
             const products = await page.evaluate(() => {
@@ -112,8 +117,11 @@ export class AliExpressProvider implements DropshippingProvider {
             });
             const page = await browser.newPage();
             await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.88 Safari/537.36');
+            await page.setExtraHTTPHeaders({
+                'Accept-Language': 'es-ES,es;q=0.9'
+            });
 
-            const url = `https://www.aliexpress.com/item/${externalId}.html`;
+            const url = `https://es.aliexpress.com/item/${externalId}.html`;
             await page.goto(url, { waitUntil: 'domcontentloaded' });
 
             // Wait a bit for dynamic content

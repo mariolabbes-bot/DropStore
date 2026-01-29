@@ -1,28 +1,39 @@
+/** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ["./app/**/*.{js,ts,jsx,tsx}", "./pages/**/*.{js,ts,jsx,tsx}", "./components/**/*.{js,ts,jsx,tsx}"],
+  content: [
+    './pages/**/*.{js,ts,jsx,tsx}',
+    './components/**/*.{js,ts,jsx,tsx}',
+  ],
   theme: {
     extend: {
       colors: {
-        primary: '#0F172A', // Slate 900 - Dark and premium
-        secondary: '#3B82F6', // Blue 600 - Valid accessible link color
-        accent: '#F59E0B', // Amber 500
+        // Slate Scale (Premium Gray)
         'brand-gray': {
-          50: '#F8FAFC', // Slate 50
-          100: '#F1F5F9', // Slate 100
-          200: '#E2E8F0', // Slate 200
-          300: '#94A3B8', // Slate 400 (Darker than original 300)
-          400: '#64748B', // Slate 500 (Much darker for secondary text)
-          500: '#475569', // Slate 600 (Base text)
-          600: '#334155', // Slate 700
-          700: '#1E293B', // Slate 800
-          800: '#0F172A', // Slate 900
-          900: '#020617', // Slate 950 (Almost black for headings)
-        }
+          50: '#F8FAFC',
+          100: '#F1F5F9',
+          200: '#E2E8F0',
+          300: '#CBD5E1',
+          400: '#94A3B8',
+          500: '#64748B',  // Text body / secondary icons
+          600: '#475569',
+          700: '#334155',
+          800: '#1E293B',  // Primary Text
+          900: '#0F172A',  // Headings / Heavy elements
+          950: '#020617',
+        },
+        primary: '#252BE6', // Original Blue/Indigo specific to brand
+        secondary: '#E62576', // Accent Pink
+        accent: '#F59E0B'
       },
       fontFamily: {
-        sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+        sans: ['Inter', 'sans-serif'],
+      },
+      boxShadow: {
+        'premium': '0 20px 40px -5px rgba(0, 0, 0, 0.05), 0 10px 20px -5px rgba(0, 0, 0, 0.02)',
       }
-    }
+    },
   },
-  plugins: []
+  plugins: [
+    require('@tailwindcss/typography'),
+  ],
 }

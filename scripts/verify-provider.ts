@@ -37,7 +37,16 @@ async function main() {
         await sleep(2000);
     }
 
-    if (results.length > 0) {
+    if (process.argv[3]) {
+        console.log(`\n--- Probando Importación Directa ID: ${process.argv[3]} ---`);
+        try {
+            const imported = await service.importProduct(process.argv[3], providerName);
+            console.log('Producto importado a DB:', imported);
+        } catch (e) {
+            console.error('Import explicit ID failed:', e);
+        }
+    } else if (results.length > 0) {
+        // Fallback to first search result
         console.log('\n--- Probando Importación (desde búsqueda) ---');
         try {
             const imported = await service.importProduct(results[0].externalId, providerName);
