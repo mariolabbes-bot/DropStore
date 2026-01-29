@@ -56,4 +56,8 @@ export class EproloProvider implements DropshippingProvider {
     async placeOrder(orderDetails: any): Promise<string> {
         return 'EPROLO-ORDER-ID';
     }
+
+    async checkStatus(): Promise<{ connected: boolean; message?: string }> {
+        return { connected: true, message: 'EPROLO Provider (Configurado)' };
+    }
 }

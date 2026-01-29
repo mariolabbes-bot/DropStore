@@ -18,16 +18,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const providers = ['cj', 'aliexpress'];
         const statuses = await Promise.all(providers.map(async (p) => {
             const provider = ProviderFactory.getProvider(p);
-            let status = { connected: false, message: 'Not checked' };
+            let currentStatus: { connected: boolean; message?: string } = { connected: false, message: 'Not checked' };
             if (provider.checkStatus) {
-                status = await provider.checkStatus();
+                currentStatus = await provider.checkStatus();
             } else {
-                status = { connected: false, message: 'Status check not implemented' };
+                currentStatus = { connected: false, message: 'Status check not implemented' };
             }
             return {
                 name: provider.name,
                 id: p,
-                ...status
+                ...currentStatus
             };
         }));
 

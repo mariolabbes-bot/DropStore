@@ -173,4 +173,8 @@ export class AliExpressProvider implements DropshippingProvider {
         console.log(`[AliExpress] Orden simulada creada: ${fakeOrderId}`);
         return fakeOrderId;
     }
+
+    async checkStatus(): Promise<{ connected: boolean; message?: string }> {
+        return { connected: true, message: 'Scraper (Puppeteer) listo' };
+    }
 }
