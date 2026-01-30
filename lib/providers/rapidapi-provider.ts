@@ -15,6 +15,22 @@ export class AliExpressRapidAPIProvider implements DropshippingProvider {
         }
     }
 
+    private convertCurrency(priceStr: string, currency: string): number {
+        let price = parseFloat(priceStr);
+        if (isNaN(price)) return 0;
+
+        if (currency === 'CNY') {
+            price = price * 0.14; // Approx exchange rate
+        } else if (currency === 'EUR') {
+            price = price * 1.08;
+        } else if (currency === 'GBP') {
+            price = price * 1.27;
+        }
+
+        // Return in cents
+        return Math.round(price * 100);
+    }
+
     async searchProducts(query: string): Promise<ProductData[]> {
         console.log(`[RapidAPI-True] Searching for: ${query}`);
         try {
@@ -53,7 +69,7 @@ export class AliExpressRapidAPIProvider implements DropshippingProvider {
             return products.map((item: any) => ({
                 externalId: String(item.product_id),
                 title: item.product_title,
-                price: parseFloat(item.sale_price || item.app_sale_price || '0') * 100,
+                price: this.convertCurrency(item.sale_price || item.app_sale_price || '0', item.sale_price_currency || 'USD'),
                 description: '',
                 images: [item.product_main_image_url],
                 vendor: item.shop_info?.shop_name || item.shop_name || 'AliExpress Vendor',
@@ -92,7 +108,7 @@ export class AliExpressRapidAPIProvider implements DropshippingProvider {
             return {
                 externalId: externalId,
                 title: data.product_title || 'AliExpress Product',
-                price: parseFloat(data.sale_price || data.app_sale_price || '0') * 100,
+                price: this.convertCurrency(data.sale_price || data.app_sale_price || '0', data.sale_price_currency || 'USD'),
                 description: data.product_description || '',
                 images: data.product_small_image_urls?.string || [data.product_main_image_url],
                 vendor: data.shop_info?.shop_name || data.shop_name || 'AliExpress Vendor',
