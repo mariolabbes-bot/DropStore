@@ -1,35 +1,40 @@
 
-import { NextApiRequest, NextApiResponse } from 'next';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '../../../../lib/auth-options';
-import prisma from '../../../../lib/prisma';
+import type { NextApiRequest, NextApiResponse } from 'next'
+import prisma from '../../../../lib/prisma'
+import { getServerSession } from "next-auth/next"
+import { authOptions } from "../../../../lib/auth-options"
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    const session = await getServerSession(req, res, authOptions);
-    if (!session || session.user?.email !== 'admin@dropstore.com') {
-        return res.status(401).json({ message: 'Unauthorized' });
+    const session = await getServerSession(req, res, authOptions)
+
+    if (!session || session.user?.role !== 'admin') {
+        return res.status(401).json({ message: 'Unauthorized' })
     }
 
     if (req.method === 'PUT') {
-        const { id, price, title, verified } = req.body;
+        const { id, price, description, title } = req.body;
 
-        if (!id) return res.status(400).json({ message: 'Missing ID' });
+        if (!id) {
+            return res.status(400).json({ message: 'Product ID is required' });
+        }
 
         try {
-            const updated = await prisma.product.update({
-                where: { id: Number(id) },
+            const product = await prisma.product.update({
+                where: { id: parseInt(id) },
                 data: {
-                    price: Number(price),
+                    price: price ? parseInt(price) : undefined,
                     title: title,
-                    verified: verified
+                    description: description
                 }
             });
-            return res.status(200).json(updated);
+
+            return res.status(200).json(product);
         } catch (error) {
-            console.error(error);
+            console.error('Error updating product:', error);
             return res.status(500).json({ message: 'Error updating product' });
         }
     }
 
-    return res.status(405).json({ message: 'Method not allowed' });
+    res.setHeader('Allow', ['PUT'])
+    res.status(405).end(`Method ${req.method} Not Allowed`)
 }

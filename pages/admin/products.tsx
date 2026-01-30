@@ -21,6 +21,10 @@ export default function AdminProducts() {
     const [previewProduct, setPreviewProduct] = useState<any>(null);
     const [loadingPreview, setLoadingPreview] = useState(false);
 
+    // Edit State
+    const [editingProduct, setEditingProduct] = useState<any>(null);
+    const [editForm, setEditForm] = useState({ title: '', price: 0 });
+
     // Fetch imported products and statuses on mount
     useEffect(() => {
         fetchImported();
@@ -110,6 +114,38 @@ export default function AdminProducts() {
                 fetchImported();
             } else {
                 toast.error('Error al eliminar', { id: loadingToast });
+            }
+        } catch (error) {
+            toast.error('Error de conexión', { id: loadingToast });
+        }
+    };
+
+    const handleEditClick = (product: any) => {
+        setEditingProduct(product);
+        setEditForm({ title: product.title, price: product.price / 100 });
+    };
+
+    const handleUpdate = async () => {
+        if (!editingProduct) return;
+        const loadingToast = toast.loading('Actualizando...');
+
+        try {
+            const res = await fetch('/api/admin/products/update', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    id: editingProduct.id,
+                    title: editForm.title,
+                    price: Math.round(editForm.price * 100) // Convert back to cents
+                })
+            });
+
+            if (res.ok) {
+                toast.success('Producto actualizado', { id: loadingToast });
+                setEditingProduct(null);
+                fetchImported();
+            } else {
+                toast.error('Error al actualizar', { id: loadingToast });
             }
         } catch (error) {
             toast.error('Error de conexión', { id: loadingToast });
@@ -340,6 +376,13 @@ export default function AdminProducts() {
                                         </div>
                                         <div className="flex gap-2">
                                             <button
+                                                onClick={() => handleEditClick(product)}
+                                                className="p-2 hover:bg-blue-500/20 text-blue-400 rounded-lg transition-colors"
+                                                title="Editar"
+                                            >
+                                                ✎
+                                            </button>
+                                            <button
                                                 onClick={() => handleDelete(product.id)}
                                                 className="p-2 hover:bg-red-500/20 text-red-400 rounded-lg transition-colors"
                                                 title="Eliminar"
@@ -376,6 +419,58 @@ export default function AdminProducts() {
                     background: rgba(255, 255, 255, 0.2);
                 }
             `}</style>
+
+            {/* Edit Modal */}
+            {editingProduct && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+                    <div className="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl animate-in zoom-in duration-200">
+                        <h3 className="text-2xl font-bold text-brand-gray-900 mb-6">Editar Producto</h3>
+
+                        <div className="space-y-4">
+                            <div>
+                                <label className="block text-xs font-bold text-brand-gray-400 uppercase tracking-widest mb-2">Título</label>
+                                <input
+                                    type="text"
+                                    value={editForm.title}
+                                    onChange={e => setEditForm({ ...editForm, title: e.target.value })}
+                                    className="w-full bg-brand-gray-50 border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-secondary"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-xs font-bold text-brand-gray-400 uppercase tracking-widest mb-2">Precio de Venta (USD)</label>
+                                <div className="relative">
+                                    <span className="absolute left-4 top-3 text-brand-gray-400">$</span>
+                                    <input
+                                        type="number"
+                                        value={editForm.price}
+                                        onChange={e => setEditForm({ ...editForm, price: parseFloat(e.target.value) })}
+                                        className="w-full bg-brand-gray-50 border-none rounded-xl pl-8 pr-4 py-3 text-sm font-bold text-brand-gray-900 focus:ring-2 focus:ring-secondary"
+                                    />
+                                </div>
+                                <p className="text-xs text-brand-gray-400 mt-2">
+                                    Costo original: ${(editingProduct.costPrice / 100).toFixed(2)}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="flex gap-3 mt-8">
+                            <button
+                                onClick={() => setEditingProduct(null)}
+                                className="flex-1 py-3 bg-brand-gray-100 text-brand-gray-500 rounded-xl font-bold hover:bg-brand-gray-200 transition-all"
+                            >
+                                Cancelar
+                            </button>
+                            <button
+                                onClick={handleUpdate}
+                                className="flex-1 py-3 bg-brand-gray-900 text-white rounded-xl font-bold hover:bg-secondary transition-all"
+                            >
+                                Guardar Cambios
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </Layout>
     );
 }
