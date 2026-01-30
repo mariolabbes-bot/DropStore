@@ -16,6 +16,11 @@ export default function AdminProducts() {
     const [importingId, setImportingId] = useState<string | null>(null);
     const [providerStatuses, setProviderStatuses] = useState<any[]>([]);
 
+    // Direct Import States
+    const [directInput, setDirectInput] = useState('');
+    const [previewProduct, setPreviewProduct] = useState<any>(null);
+    const [loadingPreview, setLoadingPreview] = useState(false);
+
     // Fetch imported products and statuses on mount
     useEffect(() => {
         fetchImported();
@@ -111,6 +116,36 @@ export default function AdminProducts() {
         }
     };
 
+    const extractAliexpressId = (input: string) => {
+        // Match digits only or extract from URL
+        const idMatch = input.match(/(\d{10,20})/);
+        return idMatch ? idMatch[1] : null;
+    };
+
+    const handlePreview = async () => {
+        const id = extractAliexpressId(directInput);
+        if (!id) {
+            toast.error('Enlace o ID no válido para AliExpress');
+            return;
+        }
+
+        setLoadingPreview(true);
+        setPreviewProduct(null);
+        try {
+            const res = await fetch(`/api/admin/products/details?id=${id}&provider=aliexpress`);
+            const data = await res.json();
+            if (res.ok) {
+                setPreviewProduct(data);
+            } else {
+                toast.error(data.message || 'Error al obtener detalles');
+            }
+        } catch (error) {
+            toast.error('Error de conexión');
+        } finally {
+            setLoadingPreview(false);
+        }
+    };
+
     if (session?.user?.email !== 'admin@dropstore.com') {
         return (
             <Layout>
@@ -201,6 +236,53 @@ export default function AdminProducts() {
                                     {loadingSearch ? 'Buscando...' : 'Buscar'}
                                 </button>
                             </form>
+
+                            {/* Direct Import (AliExpress Only) */}
+                            {selectedProvider === 'aliexpress' && (
+                                <div className="mt-8 pt-8 border-t border-brand-gray-100">
+                                    <h3 className="text-sm font-bold text-brand-gray-400 uppercase tracking-widest mb-4">Importación Directa por URL</h3>
+                                    <div className="flex gap-2">
+                                        <input
+                                            type="text"
+                                            value={directInput}
+                                            onChange={(e) => setDirectInput(e.target.value)}
+                                            placeholder="Pega el enlace o ID de AliExpress..."
+                                            className="flex-grow bg-brand-gray-50 border-none rounded-2xl px-6 py-4 text-sm focus:ring-2 focus:ring-[#FF4747] transition-all"
+                                        />
+                                        <button
+                                            onClick={handlePreview}
+                                            disabled={loadingPreview || !directInput}
+                                            className="px-8 py-4 bg-brand-gray-900 text-white rounded-2xl font-bold hover:bg-black transition-all disabled:opacity-50"
+                                        >
+                                            {loadingPreview ? '...' : 'Previsualizar'}
+                                        </button>
+                                    </div>
+
+                                    {/* Preview Card */}
+                                    {previewProduct && (
+                                        <div className="mt-4 p-4 bg-[#FFF5F5] rounded-3xl border border-[#FFDADA] flex gap-4 items-center animate-in zoom-in duration-300">
+                                            <div className="h-20 w-20 rounded-2xl overflow-hidden bg-white flex-shrink-0">
+                                                <img src={previewProduct.images[0]} alt={previewProduct.title} className="h-full w-full object-cover" />
+                                            </div>
+                                            <div className="flex-grow min-w-0">
+                                                <h4 className="font-bold text-sm text-brand-gray-900 line-clamp-1">{previewProduct.title}</h4>
+                                                <p className="font-black text-[#FF4747] mt-1">${(previewProduct.price / 100).toFixed(2)}</p>
+                                            </div>
+                                            <button
+                                                onClick={() => {
+                                                    handleImport(previewProduct);
+                                                    setPreviewProduct(null);
+                                                    setDirectInput('');
+                                                }}
+                                                disabled={importingId === previewProduct.externalId}
+                                                className="px-6 py-3 bg-[#FF4747] text-white rounded-xl text-xs font-bold hover:bg-[#E63E3E] transition-all"
+                                            >
+                                                Confirmar Importación
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
                         </section>
 
                         <div className="space-y-4">

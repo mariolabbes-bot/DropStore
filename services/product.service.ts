@@ -11,6 +11,14 @@ export class ProductService {
     }
 
     /**
+     * Obtiene detalles de un producto sin importarlo
+     */
+    async getProductDetails(externalId: string, providerName: string = 'aliexpress') {
+        const provider = ProviderFactory.getProvider(providerName);
+        return provider.getProductDetails(externalId);
+    }
+
+    /**
      * Importa un producto externo a nuestra base de datos
      */
     async importProduct(externalId: string, providerName: string = 'aliexpress') {
