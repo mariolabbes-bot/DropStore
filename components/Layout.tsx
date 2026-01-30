@@ -99,6 +99,7 @@ export default function Layout({ children }: LayoutProps) {
                         <h4 className="font-bold">Links Rápidos</h4>
                         <Link href="/" className="text-brand-gray-400 hover:text-white transition-colors">Inicio</Link>
                         <Link href="/about" className="text-brand-gray-400 hover:text-white transition-colors">Nosotros</Link>
+                        <Link href="/refund-policy" className="text-brand-gray-400 hover:text-white transition-colors">Garantía y Reembolsos</Link>
                     </div>
                     <div className="flex flex-col space-y-4 font-bold">
                         <p className="text-brand-gray-400 font-normal">Suscíbete a nuestro newsletter para ofertas exclusivas.</p>
