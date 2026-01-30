@@ -7,6 +7,7 @@ import Head from 'next/head';
 
 export default function AdminProducts() {
     const { data: session } = useSession();
+    const [selectedProvider, setSelectedProvider] = useState('cj');
     const [searchQuery, setSearchQuery] = useState('');
     const [searchResults, setSearchResults] = useState<any[]>([]);
     const [importedProducts, setImportedProducts] = useState<any[]>([]);
@@ -51,7 +52,7 @@ export default function AdminProducts() {
         setLoadingSearch(true);
         setSearchResults([]);
         try {
-            const res = await fetch(`/api/admin/products/search?q=${encodeURIComponent(searchQuery)}&provider=cj`);
+            const res = await fetch(`/api/admin/products/search?q=${encodeURIComponent(searchQuery)}&provider=${selectedProvider}`);
             const data = await res.json();
             if (Array.isArray(data)) {
                 setSearchResults(data);
@@ -75,7 +76,7 @@ export default function AdminProducts() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     externalId: externalProduct.externalId,
-                    provider: 'cj'
+                    provider: selectedProvider
                 })
             });
             const data = await res.json();
@@ -154,18 +155,48 @@ export default function AdminProducts() {
                             <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
                                 <span className="text-2xl">🔍</span> Buscar en Proveedores
                             </h2>
+
+                            {/* Provider Selection Tabs */}
+                            <div className="flex gap-4 mb-8 p-1 bg-brand-gray-50 rounded-2xl w-fit">
+                                <button
+                                    onClick={() => {
+                                        setSelectedProvider('cj');
+                                        setSearchResults([]);
+                                    }}
+                                    className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${selectedProvider === 'cj'
+                                        ? 'bg-white text-primary shadow-sm'
+                                        : 'text-brand-gray-400 hover:text-brand-gray-600'
+                                        }`}
+                                >
+                                    CJ Dropshipping
+                                </button>
+                                <button
+                                    onClick={() => {
+                                        setSelectedProvider('aliexpress');
+                                        setSearchResults([]);
+                                    }}
+                                    className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${selectedProvider === 'aliexpress'
+                                        ? 'bg-white text-[#FF4747] shadow-sm'
+                                        : 'text-brand-gray-400 hover:text-brand-gray-600'
+                                        }`}
+                                >
+                                    AliExpress
+                                </button>
+                            </div>
+
                             <form onSubmit={handleSearch} className="flex gap-2">
                                 <input
                                     type="text"
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
-                                    placeholder="Nombre del producto o ID de CJ..."
+                                    placeholder={selectedProvider === 'cj' ? "Nombre o SKU de CJ..." : "Nombre del producto de AliExpress..."}
                                     className="flex-grow bg-brand-gray-50 border-none rounded-2xl px-6 py-4 text-sm focus:ring-2 focus:ring-primary transition-all"
                                 />
                                 <button
                                     type="submit"
                                     disabled={loadingSearch}
-                                    className="px-8 py-4 bg-primary text-white rounded-2xl font-bold hover:bg-primary/90 transition-all disabled:opacity-50"
+                                    className={`px-8 py-4 text-white rounded-2xl font-bold transition-all disabled:opacity-50 ${selectedProvider === 'cj' ? 'bg-primary hover:bg-primary/90' : 'bg-[#FF4747] hover:bg-[#FF4747]/90'
+                                        }`}
                                 >
                                     {loadingSearch ? 'Buscando...' : 'Buscar'}
                                 </button>
