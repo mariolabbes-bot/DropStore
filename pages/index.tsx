@@ -68,11 +68,11 @@ export default function Home() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-in fade-in slide-in-from-bottom duration-700 delay-300">
-            <Link href="/search" className="px-10 py-5 bg-brand-gray-900 text-white rounded-full font-bold text-lg hover:bg-secondary transition-all shadow-xl hover:shadow-2xl hover:-translate-y-1">
+            <Link href="#products" className="px-10 py-5 bg-brand-gray-900 text-white rounded-full font-bold text-lg hover:bg-secondary transition-all shadow-xl hover:shadow-2xl hover:-translate-y-1">
               Explorar Catálogo
             </Link>
-            <Link href="#products" className="px-10 py-5 bg-white text-brand-gray-900 border border-brand-gray-200 rounded-full font-bold text-lg hover:bg-brand-gray-50 transition-all hover:border-brand-gray-300">
-              Ver Tendencias
+            <Link href="/about" className="px-10 py-5 bg-white text-brand-gray-900 border border-brand-gray-200 rounded-full font-bold text-lg hover:bg-brand-gray-50 transition-all hover:border-brand-gray-300">
+              Cómo Trabajamos
             </Link>
           </div>
         </div>
@@ -103,8 +103,8 @@ export default function Home() {
               <div className="text-6xl mb-6">🛍️</div>
               <h3 className="text-xl font-bold text-brand-gray-900 mb-2">Aún no hay productos destacados</h3>
               <p className="text-brand-gray-500 mb-8 max-w-md mx-auto">Parece que el inventario está vacío. Ve al importador para añadir productos increíbles.</p>
-              <Link href="/search" className="px-8 py-3 bg-secondary text-white rounded-xl font-bold hover:bg-secondary/90 transition-all shadow-lg shadow-secondary/20">
-                Ir al Importador
+              <Link href="/admin" className="px-8 py-3 bg-secondary text-white rounded-xl font-bold hover:bg-secondary/90 transition-all shadow-lg shadow-secondary/20">
+                Ir al Panel Admin
               </Link>
             </div>
           ) : (

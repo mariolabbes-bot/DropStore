@@ -29,7 +29,7 @@ export default function Layout({ children }: LayoutProps) {
                     {/* Navigation */}
                     <nav className="hidden md:flex items-center space-x-10">
                         <Link href="/" className="text-[15px] font-medium text-brand-gray-500 hover:text-primary transition-colors">Inicio</Link>
-                        <Link href="/search" className="text-[15px] font-medium text-brand-gray-500 hover:text-primary transition-colors">Importar</Link>
+                        <Link href="/about" className="text-[15px] font-medium text-brand-gray-500 hover:text-primary transition-colors">Nosotros</Link>
                         <Link href="/#products" className="text-[15px] font-medium text-brand-gray-500 hover:text-primary transition-colors">Catálogo</Link>
                     </nav>
 
@@ -98,7 +98,7 @@ export default function Layout({ children }: LayoutProps) {
                     <div className="flex flex-col space-y-4">
                         <h4 className="font-bold">Links Rápidos</h4>
                         <Link href="/" className="text-brand-gray-400 hover:text-white transition-colors">Inicio</Link>
-                        <Link href="/search" className="text-brand-gray-400 hover:text-white transition-colors">Importar</Link>
+                        <Link href="/about" className="text-brand-gray-400 hover:text-white transition-colors">Nosotros</Link>
                     </div>
                     <div className="flex flex-col space-y-4 font-bold">
                         <p className="text-brand-gray-400 font-normal">Suscíbete a nuestro newsletter para ofertas exclusivas.</p>
