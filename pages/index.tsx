@@ -46,25 +46,41 @@ export default function Home() {
   return (
     <Layout>
       {/* Hero Section */}
-      <div className="relative overflow-hidden bg-brand-gray-900 text-white">
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1557821552-17105176677c?ixlib=rb-4.0.3&auto=format&fit=crop&w=2089&q=80')] bg-cover bg-center opacity-20"></div>
-        <div className="absolute inset-0 bg-gradient-to-t from-brand-gray-900 via-transparent to-transparent"></div>
+      {/* Hero Section Minimalist */}
+      <div className="relative bg-brand-gray-50 pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32 md:py-48 flex flex-col items-center text-center">
-          <h1 className="text-5xl md:text-7xl font-black tracking-tight mb-6 animate-in fade-in slide-in-from-bottom duration-700">
-            Tu Tienda <span className="text-secondary">Premium</span>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-bold uppercase tracking-widest mb-8 animate-in fade-in slide-in-from-bottom duration-500">
+            <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse" />
+            Nueva Colección 2024
+          </div>
+
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter text-brand-gray-900 mb-8 animate-in fade-in slide-in-from-bottom duration-700 delay-100 leading-[0.9]">
+            Exclusividad <br className="hidden md:block" />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-gray-900 via-brand-gray-700 to-brand-gray-500">
+              al Detalle.
+            </span>
           </h1>
-          <p className="text-xl md:text-2xl text-brand-gray-300 max-w-2xl mb-10 animate-in fade-in slide-in-from-bottom duration-700 delay-100">
-            Descubre productos exclusivos con envío rápido y garantía de satisfacción. Calidad asegurada en cada pedido.
+
+          <p className="text-xl md:text-2xl text-brand-gray-500 max-w-2xl mx-auto mb-12 font-medium leading-relaxed animate-in fade-in slide-in-from-bottom duration-700 delay-200">
+            Curaduría de productos premium con envío garantizado. <br className="hidden md:block" />
+            Eleva tu estándar sin complicaciones.
           </p>
-          <div className="flex gap-4 animate-in fade-in slide-in-from-bottom duration-700 delay-200">
-            <Link href="/search" className="px-8 py-4 bg-primary text-white rounded-2xl font-bold hover:bg-primary/90 transition-all shadow-lg hover:scale-105">
+
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-in fade-in slide-in-from-bottom duration-700 delay-300">
+            <Link href="/search" className="px-10 py-5 bg-brand-gray-900 text-white rounded-full font-bold text-lg hover:bg-secondary transition-all shadow-xl hover:shadow-2xl hover:-translate-y-1">
               Explorar Catálogo
             </Link>
-            <Link href="#products" className="px-8 py-4 bg-white/10 backdrop-blur-md text-white border border-white/20 rounded-2xl font-bold hover:bg-white/20 transition-all">
-              Ver Ofertas
+            <Link href="#products" className="px-10 py-5 bg-white text-brand-gray-900 border border-brand-gray-200 rounded-full font-bold text-lg hover:bg-brand-gray-50 transition-all hover:border-brand-gray-300">
+              Ver Tendencias
             </Link>
           </div>
+        </div>
+
+        {/* Decorative Background Elements */}
+        <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-0 opacity-30 select-none pointer-events-none">
+          <div className="absolute -top-[20%] -right-[10%] w-[800px] h-[800px] bg-gradient-to-br from-secondary/20 to-accent/20 rounded-full blur-3xl" />
+          <div className="absolute top-[40%] -left-[10%] w-[600px] h-[600px] bg-gradient-to-tr from-blue-100 to-brand-gray-200 rounded-full blur-3xl" />
         </div>
       </div>
 

@@ -21,9 +21,9 @@ module.exports = {
           900: '#0F172A',  // Headings / Heavy elements
           950: '#020617',
         },
-        primary: '#252BE6', // Original Blue/Indigo specific to brand
-        secondary: '#E62576', // Accent Pink
-        accent: '#F59E0B'
+        primary: '#0F172A', // Deep Blue / Slate 900 (Serious Base)
+        secondary: '#6366F1', // Indigo 500 (Vibrant Tech Accent)
+        accent: '#0EA5E9', // Sky 500 (Trust/Clarity)
       },
       fontFamily: {
         sans: ['Inter', 'sans-serif'],

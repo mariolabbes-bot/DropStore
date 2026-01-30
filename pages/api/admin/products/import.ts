@@ -7,7 +7,7 @@ import { ProductService } from '../../../../services/product.service';
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const session = await getServerSession(req, res, authOptions);
 
-    if (!session || session.user?.email !== 'admin@dropstore.com') {
+    if (!session || session.user?.role !== 'admin') {
         return res.status(401).json({ message: 'Unauthorized' });
     }
 
