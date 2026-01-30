@@ -23,7 +23,13 @@ export default function AdminProducts() {
 
     // Edit State
     const [editingProduct, setEditingProduct] = useState<any>(null);
-    const [editForm, setEditForm] = useState({ title: '', price: 0 });
+    const [editForm, setEditForm] = useState({
+        title: '',
+        price: 0,
+        cost: 0,
+        margin: 0,
+        verified: false
+    });
 
     // Fetch imported products and statuses on mount
     useEffect(() => {
@@ -122,7 +128,38 @@ export default function AdminProducts() {
 
     const handleEditClick = (product: any) => {
         setEditingProduct(product);
-        setEditForm({ title: product.title, price: product.price / 100 });
+        const price = product.price / 100;
+        const cost = product.costPrice / 100;
+        // Margin = ((Price - Cost) / Cost) * 100
+        const margin = cost > 0 ? ((price - cost) / cost) * 100 : 0;
+
+        setEditForm({
+            title: product.title,
+            price: price,
+            cost: cost,
+            margin: Number(margin.toFixed(2)),
+            verified: product.verified
+        });
+    };
+
+    const handlePriceChange = (newPrice: number) => {
+        const cost = editForm.cost;
+        const newMargin = cost > 0 ? ((newPrice - cost) / cost) * 100 : 0;
+        setEditForm({
+            ...editForm,
+            price: newPrice,
+            margin: Number(newMargin.toFixed(2))
+        });
+    };
+
+    const handleMarginChange = (newMargin: number) => {
+        const cost = editForm.cost;
+        const newPrice = cost * (1 + (newMargin / 100));
+        setEditForm({
+            ...editForm,
+            margin: newMargin,
+            price: Number(newPrice.toFixed(2))
+        });
     };
 
     const handleUpdate = async () => {
@@ -136,7 +173,8 @@ export default function AdminProducts() {
                 body: JSON.stringify({
                     id: editingProduct.id,
                     title: editForm.title,
-                    price: Math.round(editForm.price * 100) // Convert back to cents
+                    price: Math.round(editForm.price * 100), // Convert back to cents
+                    verified: editForm.verified
                 })
             });
 
@@ -437,20 +475,45 @@ export default function AdminProducts() {
                                 />
                             </div>
 
-                            <div>
-                                <label className="block text-xs font-bold text-brand-gray-400 uppercase tracking-widest mb-2">Precio de Venta (USD)</label>
-                                <div className="relative">
-                                    <span className="absolute left-4 top-3 text-brand-gray-400">$</span>
+                            <div className="grid grid-cols-3 gap-4">
+                                <div>
+                                    <label className="block text-xs font-bold text-brand-gray-400 uppercase tracking-widest mb-2">Costo (USD)</label>
+                                    <div className="w-full bg-brand-gray-100 border-none rounded-xl px-4 py-3 text-sm font-bold text-brand-gray-500 cursor-not-allowed">
+                                        ${editForm.cost.toFixed(2)}
+                                    </div>
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-bold text-brand-gray-400 uppercase tracking-widest mb-2">Margen %</label>
+                                    <input
+                                        type="number"
+                                        value={editForm.margin}
+                                        onChange={e => handleMarginChange(parseFloat(e.target.value) || 0)}
+                                        className="w-full bg-brand-gray-50 border-none rounded-xl px-4 py-3 text-sm font-bold text-brand-gray-900 focus:ring-2 focus:ring-secondary"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-bold text-brand-gray-400 uppercase tracking-widest mb-2">Precio Final</label>
                                     <input
                                         type="number"
                                         value={editForm.price}
-                                        onChange={e => setEditForm({ ...editForm, price: parseFloat(e.target.value) })}
-                                        className="w-full bg-brand-gray-50 border-none rounded-xl pl-8 pr-4 py-3 text-sm font-bold text-brand-gray-900 focus:ring-2 focus:ring-secondary"
+                                        onChange={e => handlePriceChange(parseFloat(e.target.value) || 0)}
+                                        className="w-full bg-brand-gray-50 border-none rounded-xl px-4 py-3 text-sm font-bold text-brand-gray-900 focus:ring-2 focus:ring-secondary"
                                     />
                                 </div>
-                                <p className="text-xs text-brand-gray-400 mt-2">
-                                    Costo original: ${(editingProduct.costPrice / 100).toFixed(2)}
-                                </p>
+                            </div>
+
+                            {/* Verified Toggle */}
+                            <div className="flex items-center justify-between bg-brand-gray-50 p-4 rounded-xl">
+                                <div>
+                                    <h4 className="font-bold text-brand-gray-900 text-sm">Certificado de Calidad</h4>
+                                    <p className="text-xs text-brand-gray-400">Activar sello "Verificado por DropStore"</p>
+                                </div>
+                                <button
+                                    onClick={() => setEditForm({ ...editForm, verified: !editForm.verified })}
+                                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${editForm.verified ? 'bg-secondary' : 'bg-brand-gray-300'}`}
+                                >
+                                    <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${editForm.verified ? 'translate-x-6' : 'translate-x-1'}`} />
+                                </button>
                             </div>
                         </div>
 

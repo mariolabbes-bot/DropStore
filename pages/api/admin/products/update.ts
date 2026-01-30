@@ -24,7 +24,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 data: {
                     price: price ? parseInt(price) : undefined,
                     title: title,
-                    description: description
+                    description: description,
+                    verified: req.body.verified !== undefined ? req.body.verified : undefined
                 }
             });
 
