@@ -12,13 +12,20 @@ async function test() {
 
     const provider = new AliExpressRapidAPIProvider();
     try {
-        const results = await provider.searchProducts('smartwatch');
+        const testId = '1005010179828716';
+        console.log(`Testing getProductDetails for ID: ${testId}`);
+        const product = await provider.getProductDetails(testId);
+        console.log('Product Found:', product.title);
+
+        console.log('\nTesting search for "watch"...');
+        const results = await provider.searchProducts('watch');
         console.log(`Found ${results.length} products`);
-        if (results.length > 0) {
-            console.log('First Result:', results[0].title, 'Price:', results[0].price);
+    } catch (e: any) {
+        console.error('Test failed:', e.message);
+        if (e.response) {
+            console.log('Error Status:', e.response.status);
+            console.log('Error Data:', JSON.stringify(e.response.data));
         }
-    } catch (e) {
-        console.error('Search failed:', e);
     }
 }
 
