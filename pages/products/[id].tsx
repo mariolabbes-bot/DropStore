@@ -93,8 +93,8 @@ export default function ProductDetail() {
   return (
     <Layout>
       <Head>
-        <title>{product.title} | DropStore</title>
-        <meta name="description" content={product.description?.substring(0, 160) || 'Compra este producto exclusivo en DropStore.'} />
+        <title>{product.title} | Nexus Finds</title>
+        <meta name="description" content={product.description?.substring(0, 160) || 'Compra este producto exclusivo en Nexus Finds.'} />
         <meta property="og:title" content={product.title} />
         <meta property="og:description" content={product.description?.substring(0, 160)} />
         <meta property="og:image" content={selectedImage || product.image} />

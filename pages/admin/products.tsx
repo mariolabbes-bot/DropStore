@@ -233,7 +233,7 @@ export default function AdminProducts() {
     return (
         <Layout>
             <Head>
-                <title>Admin Products | DropStore</title>
+                <title>Admin Products | Nexus Finds</title>
             </Head>
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -506,7 +506,7 @@ export default function AdminProducts() {
                             <div className="flex items-center justify-between bg-brand-gray-50 p-4 rounded-xl">
                                 <div>
                                     <h4 className="font-bold text-brand-gray-900 text-sm">Certificado de Calidad</h4>
-                                    <p className="text-xs text-brand-gray-400">Activar sello "Verificado por DropStore"</p>
+                                    <p className="text-xs text-brand-gray-400">Activar sello "Verificado por Nexus Finds"</p>
                                 </div>
                                 <button
                                     onClick={() => setEditForm({ ...editForm, verified: !editForm.verified })}

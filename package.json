@@ -1,7 +1,7 @@
 {
-  "name": "dropshipping-store",
-  "version": "0.1.0",
-  "private": true,
+  "name": "nexus-finds",
+  "version": "1.0.0",
+  "description": "Tienda Dropshipping Premium",
   "scripts": {
     "dev": "next dev",
     "seed": "ts-node scripts/seed.ts",

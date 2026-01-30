@@ -19,10 +19,10 @@ export default function Layout({ children }: LayoutProps) {
                     {/* Logo */}
                     <Link href="/" className="group flex items-center gap-2">
                         <div className="h-10 w-10 bg-primary rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-primary/20 group-hover:scale-105 transition-transform">
-                            D
+                            N
                         </div>
                         <span className="text-2xl font-bold tracking-tight text-brand-gray-900">
-                            DropStore<span className="text-secondary">.</span>
+                            Nexus Finds<span className="text-secondary">.</span>
                         </span>
                     </Link>
 
@@ -77,7 +77,7 @@ export default function Layout({ children }: LayoutProps) {
                         )}
                     </div>
                 </div>
-            </header>
+            </header >
 
             <CartDrawer isOpen={isCartOpen} onClose={closeCart} />
 
@@ -89,7 +89,7 @@ export default function Layout({ children }: LayoutProps) {
                 <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-12 text-center md:text-left">
                     <div className="space-y-4">
                         <div className="text-2xl font-bold tracking-tight">
-                            DropStore<span className="text-secondary">.</span>
+                            Nexus Finds<span className="text-secondary">.</span>
                         </div>
                         <p className="text-brand-gray-400 max-w-xs">
                             Tu socio confiable en dropshipping premium. Calidad y rapidez garantizada.
@@ -110,9 +110,9 @@ export default function Layout({ children }: LayoutProps) {
                     </div>
                 </div>
                 <div className="max-w-7xl mx-auto px-4 border-t border-brand-gray-800 mt-12 pt-8 text-center text-brand-gray-500 text-sm">
-                    <p>&copy; {new Date().getFullYear()} DropStore. Todos los derechos reservados.</p>
+                    <p>&copy; {new Date().getFullYear()} Nexus Finds. Todos los derechos reservados.</p>
                 </div>
             </footer>
-        </div>
+        </div >
     );
 }

@@ -9,7 +9,7 @@ export default function AboutPage() {
     return (
         <Layout>
             <Head>
-                <title>Sobre Nosotros | DropStore Certified Quality</title>
+                <title>Sobre Nosotros | Nexus Finds Certified Quality</title>
                 <meta name="description" content="Conoce nuestro proceso de certificación de calidad. Probamos cada producto antes de enviártelo." />
             </Head>
 
@@ -30,7 +30,7 @@ export default function AboutPage() {
                     </h1>
 
                     <p className="text-xl text-brand-gray-400 max-w-2xl mx-auto mb-12 animate-in fade-in slide-in-from-bottom duration-700 delay-200">
-                        DropStore no es solo una tienda. Es un filtro de calidad en un mundo lleno de opciones.
+                        Nexus Finds no es solo una tienda. Es un filtro de calidad en un mundo lleno de opciones.
                         Probamos, verificamos y certificamos cada producto.
                     </p>
                 </div>

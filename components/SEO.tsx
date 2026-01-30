@@ -1,34 +1,32 @@
 import Head from 'next/head';
-import { useRouter } from 'next/router';
 
 interface SEOProps {
     title?: string;
     description?: string;
     image?: string;
-    type?: string;
+    url?: string;
 }
 
 export default function SEO({
-    title = 'DropStore - Tu Tienda de Dropshipping Premium',
+    title = 'Nexus Finds - Tu Tienda de Dropshipping Premium',
     description = 'Encuentra los mejores productos a precios increíbles con envío rápido y seguro.',
     image = '/og-image.jpg',
-    type = 'website'
+    url
 }: SEOProps) {
-    const router = useRouter();
-    const siteUrl = process.env.NEXT_PUBLIC_URL || 'https://dropstore.com';
-    const url = `${siteUrl}${router.asPath}`;
-    const fullTitle = title === 'DropStore' ? title : `${title} | DropStore`;
+    const siteUrl = process.env.NEXT_PUBLIC_URL || 'https://www.nexus-finds.com';
+    const canonical = url ? (url.startsWith('http') ? url : `${siteUrl}${url}`) : siteUrl;
+    const fullTitle = title === 'Nexus Finds' ? title : `${title} | Nexus Finds`;
 
     return (
         <Head>
             <title>{fullTitle}</title>
             <meta name="description" content={description} />
-            <link rel="canonical" href={url} />
+            <link rel="canonical" href={canonical} />
 
             {/* Open Graph */}
             <meta property="og:url" content={url} />
-            <meta property="og:type" content={type} />
-            <meta property="og:site_name" content="DropStore" />
+            <meta property="og:type" content="website" />
+            <meta property="og:site_name" content="Nexus Finds" />
             <meta property="og:title" content={fullTitle} />
             <meta property="og:description" content={description} />
             <meta property="og:image" content={image} />

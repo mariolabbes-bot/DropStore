@@ -80,7 +80,7 @@ export default function Register() {
                 <div className="max-w-md w-full space-y-8 bg-white p-10 rounded-[32px] shadow-premium">
                     <div>
                         <div className="mx-auto h-12 w-12 bg-secondary rounded-xl flex items-center justify-center text-white font-bold text-2xl shadow-lg shadow-secondary/20">
-                            D
+                            N
                         </div>
                         <h2 className="mt-6 text-center text-3xl font-black text-brand-gray-900 tracking-tight">
                             Crea tu cuenta

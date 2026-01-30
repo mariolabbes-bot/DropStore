@@ -7,7 +7,7 @@ export default function RefundPolicy() {
     return (
         <Layout>
             <Head>
-                <title>Política de Reembolso y Garantía | DropStore</title>
+                <title>Política de Reembolso y Garantía | Nexus Finds</title>
                 <meta name="description" content="Nuestra promesa de tranquilidad: Garantía de satisfacción y devoluciones simples." />
             </Head>
 
@@ -18,7 +18,7 @@ export default function RefundPolicy() {
 
                         <div className="prose prose-lg text-brand-gray-500 mx-auto">
                             <p className="lead font-medium text-brand-gray-900">
-                                En DropStore, queremos que compres con total confianza. Entendemos que a veces las cosas no salen como esperamos, por eso hemos simplificado nuestro proceso de garantía al máximo.
+                                En Nexus Finds, queremos que compres con total confianza. Entendemos que a veces las cosas no salen como esperamos, por eso hemos simplificado nuestro proceso de garantía al máximo.
                             </p>
 
                             <hr className="border-brand-gray-100 my-8" />
@@ -35,7 +35,7 @@ export default function RefundPolicy() {
 
                             <div className="bg-secondary/5 border border-secondary/20 rounded-2xl p-6 my-6">
                                 <p className="text-sm font-bold text-secondary m-0">
-                                    💡 Cómo reportar: Envíanos un email a soporte@dropstore.com con tu número de orden y la foto del daño. Te responderemos en menos de 24 horas.
+                                    💡 Cómo reportar: Envíanos un email a soporte@nexus-finds.com con tu número de orden y la foto del daño. Te responderemos en menos de 24 horas.
                                 </p>
                             </div>
 
@@ -58,7 +58,7 @@ export default function RefundPolicy() {
                             <hr className="border-brand-gray-100 my-8" />
 
                             <p className="text-center text-sm">
-                                ¿Dudas? Escríbenos a <strong>hola@dropstore.com</strong>
+                                ¿Dudas? Escríbenos a <strong>soporte@nexus-finds.com</strong>
                             </p>
                         </div>
                     </div>
